@@ -77,6 +77,11 @@ def generate_launch_description():
                 name='panel_node'  
             ),
             Node(
+                package='kalman_arm_aruco',
+                executable='marker_broadcaster',
+                name='marker_broadcaster'
+            ),
+            Node(
                 package="kalman_master",
                 executable="wheel_driver",
             ),

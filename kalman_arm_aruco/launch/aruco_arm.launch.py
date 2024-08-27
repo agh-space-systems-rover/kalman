@@ -97,14 +97,6 @@ def launch_setup(context):
             
         ),
     ]
-    description += [
-        Node(
-            package='kalman_arm_aruco',
-            executable='marker_broadcaster',
-            name='marker_broadcaster'
-            
-        ),
-    ]
     return description
 
 def generate_launch_description(): 
