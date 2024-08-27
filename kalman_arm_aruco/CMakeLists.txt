@@ -21,7 +21,7 @@ ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
   scripts/marker_publisher
   scripts/marker_broadcaster
-  scripts/marker_broadcaster
+  scripts/panel_node
 DESTINATION lib/${PROJECT_NAME}
 )
 
