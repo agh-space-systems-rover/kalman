@@ -47,7 +47,7 @@ def launch_setup(context):
                 "camera_namespace": "",
                 "serial_no": serial_no,
                 "config_file": str(  # Must use external config file for non-configurable options.
-                    get_package_share_path("arm_aruco_detection")
+                    get_package_share_path("kalman_arm_aruco")
                     / "config"
                     / "realsense2_camera.yaml"
                     ),
@@ -56,7 +56,7 @@ def launch_setup(context):
             for camera_name, serial_no in rgbd_ids_sns
         ]
     parameters = [
-        str(get_package_share_path("arm_aruco_detection") / "config" / f"aruco_tracker.yaml")
+        str(get_package_share_path("kalman_arm_aruco") / "config" / f"aruco_tracker.yaml")
     ]
 
     if component_container:
@@ -91,7 +91,7 @@ def launch_setup(context):
     
     description += [
         Node(
-            package='arm_aruco_detection',
+            package='kalman_arm_aruco',
             executable='marker_publisher',
             name='marker_publisher'
             
@@ -99,7 +99,7 @@ def launch_setup(context):
     ]
     description += [
         Node(
-            package='arm_aruco_detection',
+            package='kalman_arm_aruco',
             executable='marker_broadcaster',
             name='marker_broadcaster'
             
