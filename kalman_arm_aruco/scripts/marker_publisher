@@ -1,0 +1,5 @@
+#!/usr/bin/env python3
+
+from arm_aruco_detection.marker_publisher_node import main
+
+main()
