@@ -25,7 +25,7 @@ class marker_broadcaster(Node):
         markers: list[MarkerPose] = msg.markers
 
         for marker in markers:
-            MarkerTransform.child_frame_id = f"Marker{marker.marker_id}"
+            MarkerTransform.child_frame_id = f"tag_{marker.marker_id}"
 
             MarkerTransform.transform.translation.x = marker.pose.position.x
             MarkerTransform.transform.translation.y = marker.pose.position.y

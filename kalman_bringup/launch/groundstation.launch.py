@@ -72,6 +72,11 @@ def generate_launch_description():
                 executable="wheel_controller",
             ),
             Node(
+                package='arm_aruco_detection',
+                executable='panel_node',
+                name='panel_node'  
+            ),
+            Node(
                 package="kalman_master",
                 executable="wheel_driver",
             ),

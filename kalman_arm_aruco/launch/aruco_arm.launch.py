@@ -105,14 +105,6 @@ def launch_setup(context):
             
         ),
     ]
-    description += [
-        Node(
-            package='arm_aruco_detection',
-            executable='panel_node',
-            name='panel_node'
-            
-        ),
-    ]
     return description
 
 def generate_launch_description(): 

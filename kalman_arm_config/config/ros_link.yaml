@@ -80,6 +80,18 @@ rover: # or 'station'
       int_range:
         min: 0
         max: 255
+    - name: d435_arm_frames
+      type: geometry_msgs/msg/TransformStamped
+      max_rate: 2
+      fields:
+        - path: child_frame_id
+        - path: transform.translation
+        - path: transform.rotation
+          float_range:
+            min: -1.0
+            max: 1.0
+            bytes: 1
+
 
 station:
   topics:
