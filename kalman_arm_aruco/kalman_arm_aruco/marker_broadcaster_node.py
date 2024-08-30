@@ -9,7 +9,7 @@ from geometry_msgs.msg import TransformStamped
 class marker_broadcaster(Node):
 
     def __init__(self):
-        super().__init__('marker_frame_publisher')
+        super().__init__('marker_frame_broadcaster')
         self.tf_broadcaster = TransformBroadcaster(self)
         self.marker_subscription = self.create_subscription(TransformStamped, '/d435_arm_frames', self.marker_broadcast, 10)
         self.marker_subscription

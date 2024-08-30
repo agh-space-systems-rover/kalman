@@ -3,7 +3,7 @@
     cam_base_topic: color/image_raw
     output_frame: ''
 
-    marker_dict: 5X5_100
+    marker_dict: ARUCO_ORIGINAL
 
     image_sub_compressed: true
     image_sub_qos:

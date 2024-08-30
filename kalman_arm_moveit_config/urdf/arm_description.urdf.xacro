@@ -171,10 +171,10 @@
          
     </link>
 
-    <joint name="joint5_camera", type="fixed">
-        <parent link="link5">
-        <child  link="d435_arm">
-        <origin rpy="0 0 0" xyz="0 0 0.1">
+    <joint name="joint5_camera" type="fixed">
+        <parent link="link5"/>
+        <child  link="d435_arm"/>
+        <origin rpy="0 0 0" xyz="0 0 0.1"/>
     </joint>
 
 
