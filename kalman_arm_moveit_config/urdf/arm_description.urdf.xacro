@@ -157,7 +157,7 @@
             <inertia ixx="0.03" iyy="0.03" izz="0.03" ixy="0.0" ixz="0.0" iyz="0.0"/>
         </inertial>
     </link>
-
+    
     <joint name="joint_5" type="revolute">
         <axis xyz="1 0 0"/>
         <!-- 100 stopni -->
@@ -166,6 +166,18 @@
         <child link="link5_ext"/>
         <origin rpy="0 0 0" xyz="0 0 ${link_5_length/2}"/>
     </joint>
+
+    <link name="d435_arm">
+         
+    </link>
+
+    <joint name="joint5_camera", type="fixed">
+        <parent link="link5">
+        <child  link="d435_arm">
+        <origin rpy="0 0 0" xyz="0 0 0.1">
+    </joint>
+
+
 
     <link name="link5_ext">
         <visual>
