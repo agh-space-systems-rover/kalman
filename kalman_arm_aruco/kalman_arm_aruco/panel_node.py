@@ -116,11 +116,15 @@ RJ45_OFFSET = -0.0125
 B1_TO_LOCK_H = -0.1235
 B1_TO_LOCK_V = 0.0
 DEFAULT_ORIENT = (0.0, 0.0, 0.0, 1.0)
+ROTATION_ORIENT = (0.0, -0.7071, 0.7071, 0.0)
 
 
 PANEL_TRANSFORMS = [
     # PANEL A
-    build_transform(TAG_PANEL_A_FRAME, 'panel_a',
+    build_transform(TAG_PANEL_A_FRAME, 'tag_panel_a',
+                    (0.0, 0.0, 0.0),
+                    ROTATION_ORIENT),
+    build_transform('tag_panel_a', 'panel_a',
                     (SWITCH_TO_SWITCH_DISTANCE_H / 2,
                      0.0,
                      -SWITCH_TO_SWITCH_DISTANCE_V),
@@ -151,7 +155,10 @@ PANEL_TRANSFORMS = [
                      -SWITCH_TO_SWITCH_DISTANCE_V),
                     DEFAULT_ORIENT),
     # PANEL B1
-    build_transform(TAG_PANEL_B1_TOP_FRAME, 'panel_b1',
+    build_transform(TAG_PANEL_B1_TOP_FRAME, 'tag_panel_b1',
+                    (0.0,0.0,0.0),
+                    ROTATION_ORIENT),
+    build_transform('tag_panel_b1', 'panel_b1',
                     (TOP_TAG_TO_B1_H,
                      0.0,
                      TOP_TAG_TO_B1_V),
@@ -172,10 +179,13 @@ PANEL_TRANSFORMS = [
                      B1_TO_LOCK_V),
                     DEFAULT_ORIENT),
     # PANEL B2
-    build_transform(TAG_PANEL_B2_FRAME, 'panel_b2',
-                    (0.0,
+    build_transform(TAG_PANEL_B2_FRAME, 'tag_panel_b2',
+                    (0.0, 0.0, 0.0),
+                    ROTATION_ORIENT),
+    build_transform('tag_panel_b2', 'panel_b2',
+                    (SWITCH_TO_SWITCH_DISTANCE_H / 2,
                      0.0,
-                     SWITCH_TO_SWITCH_DISTANCE_V / 2),
+                     -SWITCH_TO_SWITCH_DISTANCE_V),
                     DEFAULT_ORIENT),
     build_transform('panel_b2', 'rj45',
                     (RJ45_OFFSET,
@@ -204,19 +214,19 @@ PANEL_MARKERS = [
                       SCALE_SWITCH, COLOR_SWITCH),
     build_cube_marker('switch_4', POS_SWITCH, DEFAULT_ORIENT,
                       SCALE_SWITCH, COLOR_SWITCH),
-    build_cube_marker(TAG_PANEL_A_FRAME, POS_SWITCH, DEFAULT_ORIENT,
+    build_cube_marker('tag_panel_a', POS_SWITCH, DEFAULT_ORIENT,
                       SCALE_SWITCH, COLOR_TAG),
     # PANEL B1
     build_cube_marker('switch_power', POS_SWITCH, DEFAULT_ORIENT,
                       SCALE_SWITCH, COLOR_SWITCH),
-    build_cube_marker(TAG_PANEL_B1_TOP_FRAME, POS_SWITCH, DEFAULT_ORIENT,
+    build_cube_marker('tag_panel_b1', POS_SWITCH, DEFAULT_ORIENT,
                       SCALE_SWITCH_SMALL, COLOR_TAG),
     build_cylinder_marker("socket", POS_SWITCH, (0.71, 0.0, 0.0, 0.71),
                           (0.05, 0.05, 0.01), COLOR_SOCKET),
     build_cube_marker('lock', POS_ZERO, DEFAULT_ORIENT,
                       (0.005, 0.05, 0.157), COLOR_LOCK),
     # PANEL B2
-    build_cube_marker(TAG_PANEL_B2_FRAME, POS_SWITCH, DEFAULT_ORIENT,
+    build_cube_marker('tag_panel_b2', POS_SWITCH, DEFAULT_ORIENT,
                       SCALE_SWITCH, COLOR_TAG),
     build_cube_marker("rj45", POS_SWITCH, DEFAULT_ORIENT,
                       (0.0125, 0.01, 0.0125), COLOR_RJ45),
