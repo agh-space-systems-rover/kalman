@@ -199,11 +199,11 @@ PANEL_TRANSFORMS = [
 PANEL_MARKERS = [
     # PANEL A
     build_cube_marker('panel_a', POS_ZERO, DEFAULT_ORIENT,
-                      (0.3, 0.01, 0.4), COLOR_PANEL),
+                      (0.35, 0.01, 0.45), COLOR_PANEL),
     build_cube_marker('panel_b1', POS_ZERO, DEFAULT_ORIENT,
-                      (0.2, 0.01, 0.4), COLOR_PANEL),
+                      (0.25, 0.01, 0.45), COLOR_PANEL),
     build_cube_marker('panel_b2', POS_ZERO, DEFAULT_ORIENT,
-                      (0.2, 0.01, 0.4), COLOR_PANEL),
+                      (0.25, 0.01, 0.45), COLOR_PANEL),
     build_cube_marker('switch_0', POS_SWITCH, DEFAULT_ORIENT,
                       SCALE_SWITCH, COLOR_SWITCH),
     build_cube_marker('switch_1', POS_SWITCH, DEFAULT_ORIENT,
