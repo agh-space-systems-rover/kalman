@@ -27,11 +27,11 @@ class marker_broadcaster(Node):
         for marker in markers:
             MarkerTransform.child_frame_id = f"tag_{marker.marker_id}"
 
-            MarkerTransform.transform.translation.x = marker.pose.position.x
-            MarkerTransform.transform.translation.y = marker.pose.position.y
+            MarkerTransform.transform.translation.x = - marker.pose.position.x
+            MarkerTransform.transform.translation.y = - marker.pose.position.y
             MarkerTransform.transform.translation.z = marker.pose.position.z
 
-            MarkerTransform.transform.rotation.x = marker.pose.orientation.x
+            MarkerTransform.transform.rotation.x = - marker.pose.orientation.x
             MarkerTransform.transform.rotation.y = marker.pose.orientation.y
             MarkerTransform.transform.rotation.z = marker.pose.orientation.z
             MarkerTransform.transform.rotation.w = marker.pose.orientation.w

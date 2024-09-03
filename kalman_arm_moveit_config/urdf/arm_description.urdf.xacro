@@ -174,7 +174,7 @@
     <joint name="joint5_camera" type="fixed">
         <parent link="ee"/>
         <child  link="d435_arm"/>
-        <origin rpy="1.57 0 1.57" xyz="-0.2 0 0.0"/>
+        <origin rpy="1.80 0 1.57" xyz="-0.2 0 0.07"/>
     </joint>
 
 
