@@ -35,7 +35,11 @@ class marker_broadcaster(Node):
             MarkerTransform.transform.rotation.y = marker.pose.orientation.y
             MarkerTransform.transform.rotation.z = marker.pose.orientation.z
             MarkerTransform.transform.rotation.w = marker.pose.orientation.w
-
+            if MarkerTransform.child_frame_id == "tag_14" or MarkerTransform.child_frame_id == "tag_15":
+  
+                MarkerTransform.transform.translation.x = - marker.pose.position.x * 0.6
+                MarkerTransform.transform.translation.y = - marker.pose.position.y * 0.6
+                MarkerTransform.transform.translation.z = marker.pose.position.z * 0.6
             self.marker_publisher.publish(MarkerTransform)
 
 
