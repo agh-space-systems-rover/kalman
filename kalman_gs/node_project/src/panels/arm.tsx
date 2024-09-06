@@ -12,13 +12,22 @@ import {
   keepAliveTrajectory,
   sendTrajectoryRequest,
   abortTrajectory,
-  lastStatusTrajectory
+  lastStatusTrajectory,
+  toggleArmAxisLock,
+  armAxesLocks
 } from '../common/arm';
+import {
+  armJointsLocks,
+  currentAxisLockFocus,
+  toggleArmJointLock
+} from '../common/gamepad-arming';
 import predefinedPoses from '../common/predefined-arm-poses';
 import '../common/predefined-arm-trajectories';
 import predefinedArmTrajectories from '../common/predefined-arm-trajectories';
 import { ros } from '../common/ros';
 import { JointState } from '../common/ros-interfaces';
+import { faLock, faLockOpen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Topic } from 'roslib';
 
@@ -93,7 +102,7 @@ function isCloseEnough(
 }
 
 function ArmStatus() {
-  const [_, setRerenderCount] = useState(0);
+  const [rerenderCount, setRerenderCount] = useState(0);
   const [linearScale, setLinearScale] = useState<number | null>(
     lastServoLinearScale
   );
@@ -111,10 +120,14 @@ function ArmStatus() {
     window.addEventListener('joint-state', rerender);
     window.addEventListener('servo-linear-scale', rerender);
     window.addEventListener('servo-rotational-scale', rerender);
+    window.addEventListener('arm-axis-lock-update', rerender);
+    window.addEventListener('arm-joint-lock-update', rerender);
     return () => {
       window.removeEventListener('joint-state', rerender);
       window.removeEventListener('servo-linear-scale', rerender);
       window.removeEventListener('servo-rotational-scale', rerender);
+      window.removeEventListener('arm-axis-lock-update', rerender);
+      window.removeEventListener('arm-joint-lock-update', rerender);
     };
   }, []);
 
@@ -183,10 +196,43 @@ function ArmStatus() {
     </div>
   ));
 
+  const jointLocks = Array.from({ length: 6 }, (_, i) => (
+    <div
+      className={`${styles['joint-lock']} ${currentAxisLockFocus == i + 1 ? styles['lock-selected'] : ''}`}
+      key={i + armJointsLocks[`joint_${i + 1}`] * 10}
+      onClick={() => {
+        toggleArmJointLock(`joint_${i + 1}`);
+      }}
+    >
+      {armJointsLocks[`joint_${i + 1}`] ? (
+        <FontAwesomeIcon icon={faLock} />
+      ) : (
+        <FontAwesomeIcon icon={faLockOpen} />
+      )}
+    </div>
+  ));
+
+  const getAxisLockIcon = (axis: string) => (
+    <div
+      className={`${styles['joint-lock']}`}
+      key={axis + armAxesLocks[axis]}
+      onClick={() => toggleArmAxisLock(axis)}
+    >
+      {armAxesLocks[axis] ? (
+        <FontAwesomeIcon icon={faLock} />
+      ) : (
+        <FontAwesomeIcon icon={faLockOpen} />
+      )}
+    </div>
+  );
+
   return (
     <div className={styles['arm-status']}>
       <h1 className={styles['status-header']}>Arm Status</h1>
       <div className={styles['status']}>
+        <div className={styles['joint-column'] + ' ' + styles['align-left']}>
+          {jointLocks}
+        </div>
         <div className={styles['joint-column'] + ' ' + styles['align-left']}>
           {jointNames}
         </div>
@@ -240,6 +286,30 @@ function ArmStatus() {
           </div>
         </div>
       </div>
+
+      <h3 className={styles['scales-header']}>Axis locks</h3>
+      <div className={styles['locks']}>
+        <div className={styles['scale-column']}>
+          <div className={styles['lock-name']}>X: </div>
+          <div className={styles['lock-name']}>Y: </div>
+          <div className={styles['lock-name']}>Z: </div>
+        </div>
+        <div className={styles['scale-column']}>
+          {getAxisLockIcon('x')}
+          {getAxisLockIcon('y')}
+          {getAxisLockIcon('z')}
+        </div>
+        <div className={styles['scale-column']}>
+          <div className={styles['lock-name']}>Roll: </div>
+          <div className={styles['lock-name']}>Pitch: </div>
+          <div className={styles['lock-name']}>Yaw: </div>
+        </div>
+        <div className={styles['scale-column']}>
+          {getAxisLockIcon('roll')}
+          {getAxisLockIcon('pitch')}
+          {getAxisLockIcon('yaw')}
+        </div>
+      </div>
     </div>
   );
 }
@@ -279,6 +349,25 @@ function PoseRequester() {
     return () => clearInterval(intervalId);
   }, []);
 
+  const isStartingFromSafePose = (safePreviousPoses: number[]) => {
+    for (let i = 0; i < safePreviousPoses.length; i++) {
+      if (
+        isCloseEnough(
+          predefinedPoses.POSES_JOINTS[
+            predefinedPoses.PREDEFINED_POSES.poses[safePreviousPoses[i]].name
+          ],
+          namesAndValues.map((joint) => joint.value),
+          predefinedPoses.PREDEFINED_POSES.max_distance_rad,
+          predefinedPoses.PREDEFINED_POSES.poses[safePreviousPoses[i]]
+            .joints_checked
+        )
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const [currentPoseId, setCurrentPoseId] = useState(0);
 
   const namesAndValues = getNamesAndValues();
@@ -307,7 +396,7 @@ function PoseRequester() {
               namesAndValues.map((joint) => joint.value),
               predefinedPoses.PREDEFINED_POSES.max_distance_rad,
               predefinedPoses.PREDEFINED_POSES.poses[i].joints_checked
-            )
+            ) || isStartingFromSafePose(pose.safe_previous_poses)
               ? styles['pose-ready']
               : styles['pose-not-ready']
           }`}
@@ -353,14 +442,18 @@ function PoseRequester() {
     ))
   );
 
-  const closeEnough = isCloseEnough(
-    predefinedPoses.POSES_JOINTS[
-      predefinedPoses.PREDEFINED_POSES.poses[currentPoseId].name
-    ],
-    namesAndValues.map((joint) => joint.value),
-    predefinedPoses.PREDEFINED_POSES.max_distance_rad,
-    predefinedPoses.PREDEFINED_POSES.poses[currentPoseId].joints_checked
-  );
+  const closeEnough =
+    isCloseEnough(
+      predefinedPoses.POSES_JOINTS[
+        predefinedPoses.PREDEFINED_POSES.poses[currentPoseId].name
+      ],
+      namesAndValues.map((joint) => joint.value),
+      predefinedPoses.PREDEFINED_POSES.max_distance_rad,
+      predefinedPoses.PREDEFINED_POSES.poses[currentPoseId].joints_checked
+    ) ||
+    isStartingFromSafePose(
+      predefinedPoses.PREDEFINED_POSES.poses[currentPoseId].safe_previous_poses
+    );
   return (
     <div className={styles['pose-requester']}>
       <h2 className={styles['pose-header']}>Pose Requester</h2>
