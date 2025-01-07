@@ -60,6 +60,22 @@ def launch_setup(context):
             package="kalman_master",
             executable="feed_driver",
         ),
+        "weight_driver": Node(
+            package="kalman_master",
+            executable="weight_driver",
+        ),
+        "universal_driver": Node(
+            package="kalman_master",
+            executable="universal_driver",
+            parameters=[
+                {
+                    "config_directory_path": str(
+                        get_package_share_path("kalman_master")
+                        / "config/universal_driver"
+                    ),
+                },
+            ],
+        ),
         "wheel_driver": Node(
             package="kalman_master",
             executable="wheel_driver",
