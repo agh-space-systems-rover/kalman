@@ -61,6 +61,22 @@ def launch_setup(context):
             package="kalman_master",
             executable="feed_driver",
         ),
+        "weight_driver": Node(
+            package="kalman_master",
+            executable="weight_driver",
+        ),
+        "universal_driver": Node(
+            package="kalman_master",
+            executable="universal_driver",
+            parameters=[
+                {
+                    "config_directory_path": str(
+                        get_package_share_path("kalman_master")
+                        / "config/universal_driver"
+                    ),
+                },
+            ],
+        ),
         "wheel_driver": Node(
             package="kalman_master",
             executable="wheel_driver",
@@ -68,6 +84,18 @@ def launch_setup(context):
         "autonomy_spammer": Node(
             package="kalman_master",
             executable="autonomy_switch_spam",
+        ),
+        "universal_driver": Node(
+            package="kalman_master",
+            executable="universal_driver",
+            parameters=[
+                {
+                    "config_directory_path": str(
+                        get_package_share_path("kalman_master")
+                        / "config/universal_driver"
+                    ),
+                },
+            ],
         ),
         "link_pc_to_gs": start_ros_link(side="rover", rover_endpoint="pc"),
         "link_arm_to_gs": start_ros_link(side="rover", rover_endpoint="arm"),
@@ -107,6 +135,7 @@ def launch_setup(context):
             "ueuos_driver",
             "feed_driver",
             "arm_twist_driver",
+            "universal_driver",
             "drill_driver",
         ],
         "arm": [

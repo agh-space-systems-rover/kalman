@@ -38,8 +38,10 @@ install(PROGRAMS
   scripts/master_com
   scripts/master_loopback
   scripts/ros_link
+  scripts/universal_driver
   scripts/tunnel_client
   scripts/ueuos_driver
+  scripts/weight_driver
   scripts/wheel_driver
   DESTINATION lib/${PROJECT_NAME}
 )

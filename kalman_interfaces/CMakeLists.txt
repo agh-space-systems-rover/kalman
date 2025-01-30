@@ -27,6 +27,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/WheelTemperature.msg"
   "msg/WheelTemperatures.msg"
   "srv/SetFeed.srv"
+  "srv/Science.srv"
+  "msg/ScienceWeight.msg"
   "srv/SetUeuosColor.srv"
   "srv/SetUeuosEffect.srv"
   "srv/SetUeuosState.srv"
