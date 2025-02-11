@@ -60,10 +60,6 @@ window.addEventListener('ros-connect', () => {
       requestedTurnAngle = Math.max(requestedTurnAngle - TURN_ANGLE_STEP, MIN_TURN_ANGLE);
     }
 
-    if (turn !== 0) {
-      maxTurnAngle = Math.abs(requestedTurnAngle);
-    }
-
     turnFactor += (requestedTurnAngle * TURN_ANGLE_STEP) / RATE;
     turnFactor = Math.max(MIN_TURN_ANGLE, Math.min(MAX_TURN_ANGLE, turnFactor));
     turn *= turnFactor;
