@@ -17,4 +17,8 @@ def generate_launch_description():
         "rviz": {
             "configs": "autonomy",
         },
+        "nav2": {
+            "rgbd_ids": RGBD_IDS,
+        },
+        "wheels": {},
     })
