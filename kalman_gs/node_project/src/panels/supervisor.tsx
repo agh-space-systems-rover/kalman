@@ -311,7 +311,23 @@ export default function Supervisor({ props }: Props) {
           </>
         )}
 
-        {missionType === MissionType.ARCH_TRAVERSAL && <p>dupa</p>}
+        {missionType === MissionType.ARCH_TRAVERSAL && (
+          <>
+            <div className={styles['supervisor-row']}>
+              <Label color={greenBg}>
+                <FontAwesomeIcon icon={faArrowsUpDown} />
+              </Label>
+              <Input ref={inputRefs[0]} type='float' placeholder='Initial Latitude' />
+              <Label color={redBg}>
+                <FontAwesomeIcon icon={faArrowsLeftRight} />
+              </Label>
+              <Input ref={inputRefs[1]} type='float' placeholder='Initial Longitude' />
+              <Button tooltip='Set initial location from map marker.' onClick={() => setLatLongFromMapMarker(0, 1)}>
+                <FontAwesomeIcon icon={faLocationDot} />
+              </Button>
+            </div>
+          </>
+        )}
 
         <div className={styles['supervisor-row']}>
           <Button
@@ -411,8 +427,6 @@ export default function Supervisor({ props }: Props) {
                 };
                 client = gpsYoloSearchClient;
               } else if (missionType === MissionType.ARCH_TRAVERSAL) {
-                // TODO TODO TODO
-
                 goal = {};
                 client = gpsYoloSearchClient;
               }
@@ -477,7 +491,10 @@ export default function Supervisor({ props }: Props) {
           {(() => {
             // Add new mission types here:
 
-            if (lastFeedback?.missionType === 0 || lastFeedback?.missionType === 1) {
+            if (
+              lastFeedback?.missionType === MissionType.TF_GOAL ||
+              lastFeedback?.missionType === MissionType.GPS_GOAL
+            ) {
               const feedback = lastFeedback.feedback as SupervisorTfGoalFeedback & SupervisorGpsGoalFeedback;
 
               return (
@@ -496,7 +513,10 @@ export default function Supervisor({ props }: Props) {
               );
             }
 
-            if (lastFeedback?.missionType === 2 || lastFeedback?.missionType === 3) {
+            if (
+              lastFeedback?.missionType === MissionType.GPS_ARUCO_SEARCH ||
+              lastFeedback?.missionType === MissionType.GPS_YOLO_SEARCH
+            ) {
               const feedback = lastFeedback.feedback as SupervisorGpsYoloSearchFeedback &
                 SupervisorGpsArUcoSearchFeedback;
 
@@ -518,7 +538,7 @@ export default function Supervisor({ props }: Props) {
                   </div>
                   <div className={styles['feedback-row']}>
                     <Label color={bgColor} className={styles['feedback-key']}>
-                      {lastFeedback.missionType === 2 ? 'Marker' : 'Object'}
+                      {lastFeedback.missionType === MissionType.GPS_ARUCO_SEARCH ? 'Marker' : 'Object'}
                     </Label>
                     {poiFound ? (
                       <div className={styles['feedback-value']}>
