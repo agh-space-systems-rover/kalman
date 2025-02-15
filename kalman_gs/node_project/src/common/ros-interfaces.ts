@@ -109,6 +109,16 @@ export type SupervisorGpsYoloSearchFeedback = {
 };
 // Result is empty.
 
+export type SupervisorArchTraversal = {
+  list_of_locations?: GeoPoint[];
+  search_location?: GeoPoint;
+  final_location?: GeoPoint;
+};
+export type SupervisorArchTraversalFeedback = {
+  // TODO
+};
+// Result is empty.
+
 export type WheelState = {
   velocity?: number;
   angle?: number;
@@ -184,4 +194,4 @@ export type ColorRGB = {
   r: number;
   g: number;
   b: number;
-}
+};

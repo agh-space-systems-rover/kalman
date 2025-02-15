@@ -1,0 +1,9 @@
+geographic_msgs/GeoPoint[] list_of_locations # List of n locations to visit
+geographic_msgs/GeoPoint search_location # Location to visit next after all from the list
+geographic_msgs/GeoPoint final_location # Final location, after visiting all above
+---
+---
+# TODO
+# TODO
+# TODO
+# TODO
