@@ -124,7 +124,7 @@ class Supervisor(Node):
             )
 
         # Transition if requested.
-        if new_state_name and new_state_name != self.state:
+        if new_state_name:
             try:
                 self.__state_dict[self.state].exit()
             except Exception as e:

@@ -21,6 +21,15 @@ class Travel(State):
                 self.supervisor.nav.send_gps_goal(mission.init_lat, mission.init_lon)
             elif isinstance(mission, Missions.GpsYoloSearch):
                 self.supervisor.nav.send_gps_goal(mission.init_lat, mission.init_lon)
+            elif isinstance(mission, Missions.ArchTraversal):
+                if mission.goal_idx < len(mission.map_goals):
+                    pos = mission.map_goals[mission.goal_idx]
+                    self.supervisor.nav.send_goal(np.array([pos[0], pos[1], 0]), "map")
+                # else:
+                #     self.supervisor.nav.send_gps_goal(
+                #         mission.final_lat, mission.final_lon
+                #     )
+                mission.goal_idx += 1
         self.mission_canceled = False
 
     def tick(self) -> str | None:
@@ -43,3 +52,8 @@ class Travel(State):
                 return "search_for_aruco"
             elif isinstance(mission, Missions.GpsYoloSearch):
                 return "search_for_yolo"
+            elif isinstance(mission, Missions.ArchTraversal):
+                if mission.goal_idx < len(mission.map_goals):
+                    return "travel"  # re-enters
+                else:
+                    return "stop_to_finished"

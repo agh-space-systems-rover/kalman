@@ -12,6 +12,7 @@ from kalman_interfaces.action import (
     SupervisorGpsGoal,
     SupervisorGpsArUcoSearch,
     SupervisorGpsYoloSearch,
+    SupervisorArchTraversal,
 )
 
 
@@ -66,6 +67,15 @@ class Missions(Module):
 
             self.obj_world_frame_pos = np.array([0.0, 0.0, 0.0])
 
+    class ArchTraversal(Mission):
+        def __init__(
+            self,
+            map_goals: list[tuple[float, float]],
+        ):
+            super().__init__()
+            self.map_goals = map_goals
+            self.goal_idx = 0
+
     def __init__(self):
         super().__init__("missions")
 
@@ -116,6 +126,14 @@ class Missions(Module):
             SupervisorGpsYoloSearch,
             "missions/gps_yolo_search",
             self.__gps_yolo_search_cb,
+            callback_group=self.__callback_group,
+            cancel_callback=self.__action_cancel_cb,
+        )
+        self.__arch_traversal_server = ActionServer(
+            self.supervisor,
+            SupervisorArchTraversal,
+            "missions/arch_traversal",
+            self.__arch_traversal_cb,
             callback_group=self.__callback_group,
             cancel_callback=self.__action_cancel_cb,
         )
@@ -200,6 +218,10 @@ class Missions(Module):
                         feedback.object_location.latitude = self.__mission.obj_lat
                         feedback.object_location.longitude = self.__mission.obj_lon
                         self.__mission_goal_handle.publish_feedback(feedback)
+                    elif isinstance(self.__mission, Missions.ArchTraversal):
+                        feedback = SupervisorArchTraversal.Feedback()
+                        feedback.state = self.supervisor.state
+                        self.__mission_goal_handle.publish_feedback(feedback)
 
     def deactivate(self) -> None:
         self.__gps_yolo_search_server.destroy()
@@ -283,6 +305,27 @@ class Missions(Module):
         with self.__mission_condition:
             self.__queue_up_mission(mission, goal_handle)
         return SupervisorGpsYoloSearch.Result()
+
+    def __arch_traversal_cb(
+        self, goal_handle: ServerGoalHandle
+    ) -> SupervisorArchTraversal.Result:
+        # Transform the goals to map frame.
+        base_link_goals = [
+            (point.x, point.y) for point in goal_handle.request.placard_locations
+        ]
+        map_goals = []
+        for x, y in base_link_goals:
+            pos = np.array([x, y, 0])
+            pos = self.supervisor.tf.transform_numpy(
+                pos, self.supervisor.map.frame(), "base_link"
+            )
+            map_goals.append((pos[0], pos[1]))
+
+        # Queue up the mission.
+        mission = Missions.ArchTraversal(map_goals)
+        with self.__mission_condition:
+            self.__queue_up_mission(mission, goal_handle)
+        return SupervisorArchTraversal.Result()
 
     def __action_cancel_cb(self, _) -> CancelResponse:
         return CancelResponse.ACCEPT
